@@ -8,6 +8,8 @@ DATA_DIR = "data"
 def render_manage_tab():
     col_nav, col_edit = st.columns([1, 2])
 
+    st.session_state.stations.sort(key=lambda x: x["sistema"].lower())
+
     # =========================
     # NAVEGACIÓN
     # =========================

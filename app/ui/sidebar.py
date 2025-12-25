@@ -11,6 +11,7 @@ def render_sidebar():
     # ITEMS
     # ======================
     with st.sidebar.expander("📦 Items"):
+        # Añadir
         with st.form("add_item", clear_on_submit=True):
             val = st.text_input("Nuevo item")
             if st.form_submit_button("Añadir"):
@@ -19,12 +20,21 @@ def render_sidebar():
                     st.session_state.items_master.sort(key=str.lower)
                     save_json(f"{DATA_DIR}/nms_items.json", st.session_state.items_master)
                     st.rerun()
-
+        # Borrar
         item = st.selectbox("Eliminar item", ["---"] + st.session_state.items_master)
         if st.button("🗑️ Eliminar Item") and item != "---":
-            st.session_state.items_master.remove(item)
-            save_json(f"{DATA_DIR}/nms_items.json", st.session_state.items_master)
-            st.rerun()
+            # Protección: no borrar items en uso
+            used = any(
+                item in [i['item'] for i in s["compra"] + s["venta"]]
+                for s in st.session_state.stations
+            )
+
+            if used:
+                st.warning(f"El item '{item}' está en uso por una o más estaciones.")
+            else:
+                st.session_state.items_master.remove(item)
+                save_json(f"{DATA_DIR}/nms_items.json", st.session_state.items_master)
+                st.rerun()
 
     # ======================
     # ECONOMÍAS
