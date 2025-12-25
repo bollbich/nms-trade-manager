@@ -1,5 +1,4 @@
 import os
-
 import streamlit as st
 from app.state import init_state
 from app.ui.sidebar import render_sidebar
