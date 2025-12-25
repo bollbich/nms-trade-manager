@@ -16,9 +16,24 @@ def render_manage_tab():
     with col_nav:
         st.subheader("Estaciones")
 
+        stations = st.session_state.stations
+
+        search = st.text_input(
+            "🔎 Buscar estación",
+            placeholder="Sistema o estación"
+        )
+
+        if search:
+            search_l = search.lower()
+            stations = [
+                s for s in stations
+                if search_l in s["sistema"].lower()
+                   or search_l in s["estacion"].lower()
+            ]
+
         options = ["✨ CREAR NUEVA"] + [
             f"{s['sistema']} | {s['estacion']}"
-            for s in st.session_state.stations
+            for s in stations
         ]
 
         selected = st.radio("Seleccionar", options)
@@ -103,6 +118,7 @@ def render_manage_tab():
         # =========================
         # ACCIONES
         # =========================
+        # GUARDAR
         if st.button("💾 GUARDAR", type="primary"):
             if not sistema or not estacion:
                 st.warning("Sistema y estación son obligatorios")
@@ -123,7 +139,33 @@ def render_manage_tab():
             st.success("Guardado correctamente")
             st.session_state.editing_id = station["id"]
             st.rerun()
+        # DUPLICAR
+        if st.session_state.editing_id:
+            if st.button("📄 DUPLICAR"):
+                original = find_station(
+                    st.session_state.stations,
+                    st.session_state.editing_id
+                )
 
+                nueva = {
+                    "id": new_station_id(),
+                    "sistema": original["sistema"],
+                    "estacion": f"{original['estacion']} (copia)",
+                    "economia": original["economia"],
+                    "compra": list(original["compra"]),
+                    "venta": list(original["venta"]),
+                }
+
+                st.session_state.stations.append(nueva)
+                save_json(f"{DATA_DIR}/nms_stations.json", st.session_state.stations)
+
+                # Pasar a editar la copia
+                st.session_state.editing_id = nueva["id"]
+                st.session_state.temp_buy = list(nueva["compra"])
+                st.session_state.temp_sell = list(nueva["venta"])
+
+                st.rerun()
+        # BORRAR
         if st.session_state.editing_id:
             if st.button("🗑️ BORRAR", type="secondary"):
                 st.session_state.stations = delete_station(
