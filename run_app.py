@@ -1,6 +1,7 @@
-import streamlit.web.cli as stcli
 import sys
+import os
 
-if __name__ == "__main__":
-    sys.argv = ["streamlit", "run", "app/main.py"]
-    sys.exit(stcli.main())
+root_path = os.path.dirname(os.path.abspath(__file__))
+if root_path not in sys.path:
+    sys.path.insert(0, root_path)
+from app.main import *
