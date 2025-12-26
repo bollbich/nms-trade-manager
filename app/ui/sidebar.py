@@ -3,7 +3,8 @@ from app.storage import save_json
 from app.services import export_database, import_database
 
 DATA_DIR = "data"
-
+MAX_IMPORT_MB = 50
+MAX_IMPORT_BYTES = MAX_IMPORT_MB * 1024 * 1024
 
 def render_sidebar():
     st.sidebar.header("⚙️ Configuración Maestra")
@@ -11,7 +12,7 @@ def render_sidebar():
     # ======================
     # ITEMS
     # ======================
-    with st.sidebar.expander("📦 Items"):
+    with st.sidebar.expander("📦 Items", expanded=False):
         # Añadir
         with st.form("add_item", clear_on_submit=True):
             val = st.text_input("Nuevo item")
@@ -40,7 +41,7 @@ def render_sidebar():
     # ======================
     # ECONOMÍAS
     # ======================
-    with st.sidebar.expander("💰 Economías", expanded=True):
+    with st.sidebar.expander("💰 Economías", expanded=False):
         # Añadir
         with st.form("add_econ", clear_on_submit=True):
             val = st.text_input("Nueva economía")
@@ -82,7 +83,7 @@ def render_sidebar():
     # ======================
     # BACKUP / RESTORE
     # ======================
-    with st.sidebar.expander("💾 Importar / Exportar"):
+    with st.sidebar.expander("💾 Importar / Exportar", expanded=False):
         # EXPORTAR
         export_json = export_database(
             st.session_state.stations,
@@ -98,23 +99,33 @@ def render_sidebar():
         )
 
         st.divider()
-
         # IMPORTAR
         uploaded = st.file_uploader(
             label="Seleccionar archivo de respaldo",
             type="json",
             key="db_uploader"
         )
+        st.caption(
+            "Nota: el selector indica 200 MB por una limitación interna de Streamlit. "
+            f"Límite máximo de importación: {MAX_IMPORT_MB} MB"
+        )
 
         if uploaded:
-            try:
-                content = uploaded.read().decode("utf-8")
-                st.session_state["_import_preview"] = import_database(content)
-                st.success("Archivo válido. Listo para importar.")
-
-            except Exception as e:
+            if uploaded.size > MAX_IMPORT_BYTES:
+                st.error(
+                    f"El archivo supera el límite permitido "
+                    f"({MAX_IMPORT_MB} MB)"
+                )
                 st.session_state["_import_preview"] = None
-                st.error(f"Archivo inválido: {e}")
+
+            else:
+                try:
+                    content = uploaded.read().decode("utf-8")
+                    st.session_state["_import_preview"] = import_database(content)
+                    st.success("Archivo válido. Pulsa para actualizar la base.")
+                except Exception as e:
+                    st.session_state["_import_preview"] = None
+                    st.error(f"Archivo inválido: {e}")
 
         if st.session_state.get("_import_preview"):
             if st.button("⚠️ Actualizar base de datos", type="primary"):

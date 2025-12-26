@@ -730,6 +730,10 @@
         "economia": "Materiales avanzados // Holgado",
         "compra": [
             {
+                "item": "Atlas",
+                "pct": 0.0
+            },
+            {
                 "item": "Caja de nanotubos",
                 "pct": 0.0
             },
@@ -743,6 +747,10 @@
             }
         ],
         "venta": [
+            {
+                "item": "Atlas",
+                "pct": 0.0
+            },
             {
                 "item": "Coordinadores de teletransporte",
                 "pct": 0.0
@@ -1075,6 +1083,60 @@
             },
             {
                 "item": "Suciedad",
+                "pct": 0.0
+            }
+        ]
+    },
+    {
+        "id": "b19c3a57-f943-4b35-89c7-2e4ee485ed01",
+        "sistema": "Luzhoula",
+        "estacion": "Omega Luzhoula",
+        "economia": "Investigacioón // En desarrollo",
+        "compra": [
+            {
+                "item": "Atlas",
+                "pct": 0.0
+            },
+            {
+                "item": "Botellas sin aroma",
+                "pct": 0.0
+            },
+            {
+                "item": "Canalizacion organica",
+                "pct": 0.0
+            },
+            {
+                "item": "Inyector de inestabilidad",
+                "pct": 0.0
+            },
+            {
+                "item": "Microscopio de neutrones",
+                "pct": 0.0
+            }
+        ],
+        "venta": [
+            {
+                "item": "Atlas",
+                "pct": 0.0
+            },
+            {
+                "item": "Caja de nanotubos",
+                "pct": 0.0
+            },
+            {
+                "item": "Disolvente optico",
+                "pct": 0.0
+            },
+            {
+                "item": "Fibra superconductora",
+                "pct": 0.0
+            },
+            {
+                "item": "Heridio autoreparable",
+                "pct": 0.0
+            },
+            {
+                "item": "Toro 5D",
                 "pct": 0.0
             }
         ]
