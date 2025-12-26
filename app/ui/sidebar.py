@@ -79,9 +79,6 @@ def render_sidebar():
                 )
                 st.rerun()
 
-    from app.services import export_database, import_database
-    from app.storage import save_json
-
     # ======================
     # BACKUP / RESTORE
     # ======================

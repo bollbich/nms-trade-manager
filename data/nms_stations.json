@@ -724,6 +724,44 @@
         ]
     },
     {
+        "id": "ac1eba72-8fa9-45ab-8ff5-1dcccd0a42c8",
+        "sistema": "Ranono",
+        "estacion": "Término de Ranono",
+        "economia": "Materiales avanzados // Holgado",
+        "compra": [
+            {
+                "item": "Caja de nanotubos",
+                "pct": 0.0
+            },
+            {
+                "item": "Disolvente optico",
+                "pct": 0.0
+            },
+            {
+                "item": "Heridio autoreparable",
+                "pct": 0.0
+            }
+        ],
+        "venta": [
+            {
+                "item": "Coordinadores de teletransporte",
+                "pct": 0.0
+            },
+            {
+                "item": "Datos de usuario desencriptados",
+                "pct": 0.0
+            },
+            {
+                "item": "Esfera de iones",
+                "pct": 0.0
+            },
+            {
+                "item": "Seda estelar",
+                "pct": 0.0
+            }
+        ]
+    },
+    {
         "id": "f80d0499-83b7-4d8c-9377-ce96dc7cfb12",
         "sistema": "Sebona-Dihoe",
         "estacion": "Centro Sebona-Dihoe",
