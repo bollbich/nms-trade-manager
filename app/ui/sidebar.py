@@ -79,6 +79,9 @@ def render_sidebar():
                 )
                 st.rerun()
 
+    from app.services import export_database, import_database
+    from app.storage import save_json
+
     # ======================
     # BACKUP / RESTORE
     # ======================
@@ -101,27 +104,33 @@ def render_sidebar():
 
         # IMPORTAR
         uploaded = st.file_uploader(
-            "Importar base de datos",
-            type="json"
+            label="Seleccionar archivo de respaldo",
+            type="json",
+            key="db_uploader"
         )
 
         if uploaded:
             try:
                 content = uploaded.read().decode("utf-8")
-                stations, items, economies = import_database(content)
+                st.session_state["_import_preview"] = import_database(content)
+                st.success("Archivo válido. Listo para importar.")
+
+            except Exception as e:
+                st.session_state["_import_preview"] = None
+                st.error(f"Archivo inválido: {e}")
+
+        if st.session_state.get("_import_preview"):
+            if st.button("⚠️ Actualizar base de datos", type="primary"):
+                stations, items, economies = st.session_state["_import_preview"]
 
                 st.session_state.stations = stations
                 st.session_state.items_master = items
                 st.session_state.econ_master = economies
 
-                # Persistir inmediatamente
-                from app.storage import save_json
                 save_json("data/nms_stations.json", stations)
                 save_json("data/nms_items.json", items)
                 save_json("data/nms_economies.json", economies)
 
-                st.success("Base de datos importada correctamente")
+                st.session_state["_import_preview"] = None
+                st.success("Base de datos actualizada correctamente")
                 st.rerun()
-
-            except Exception as e:
-                st.error(f"Error al importar: {e}")
