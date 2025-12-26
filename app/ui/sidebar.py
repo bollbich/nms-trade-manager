@@ -1,5 +1,6 @@
 import streamlit as st
 from app.storage import save_json
+from app.services import export_database, import_database
 
 DATA_DIR = "data"
 
@@ -77,3 +78,50 @@ def render_sidebar():
                     st.session_state.econ_master
                 )
                 st.rerun()
+
+    # ======================
+    # BACKUP / RESTORE
+    # ======================
+    with st.sidebar.expander("💾 Importar / Exportar"):
+        # EXPORTAR
+        export_json = export_database(
+            st.session_state.stations,
+            st.session_state.items_master,
+            st.session_state.econ_master
+        )
+
+        st.download_button(
+            label="⬇️ Exportar base de datos",
+            data=export_json,
+            file_name="nms_trade_backup.json",
+            mime="application/json"
+        )
+
+        st.divider()
+
+        # IMPORTAR
+        uploaded = st.file_uploader(
+            "Importar base de datos",
+            type="json"
+        )
+
+        if uploaded:
+            try:
+                content = uploaded.read().decode("utf-8")
+                stations, items, economies = import_database(content)
+
+                st.session_state.stations = stations
+                st.session_state.items_master = items
+                st.session_state.econ_master = economies
+
+                # Persistir inmediatamente
+                from app.storage import save_json
+                save_json("data/nms_stations.json", stations)
+                save_json("data/nms_items.json", items)
+                save_json("data/nms_economies.json", economies)
+
+                st.success("Base de datos importada correctamente")
+                st.rerun()
+
+            except Exception as e:
+                st.error(f"Error al importar: {e}")
